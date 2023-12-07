@@ -88,13 +88,13 @@ class CliffWalking(CliffWalkingEnv):
         if self.is_hardmode:
             match action:
                 case 0:
-                    action = np.random.choice([0, 1, 3], p=[1 / 3, 1 / 3, 1 / 3])
+                    action = np.random.choice([0, 1, 3], p=[8 / 10, 1 / 10, 1 / 10])
                 case 1:
-                    action = np.random.choice([0, 1, 2], p=[1 / 3, 1 / 3, 1 / 3])
+                    action = np.random.choice([0, 1, 2], p=[1 / 10, 8 / 10, 1 / 10])
                 case 2:
-                    action = np.random.choice([1, 2, 3], p=[1 / 3, 1 / 3, 1 / 3])
+                    action = np.random.choice([1, 2, 3], p=[1 / 10, 8 / 10, 1 / 10])
                 case 3:
-                    action = np.random.choice([0, 2, 3], p=[1 / 3, 1 / 3, 1 / 3])
+                    action = np.random.choice([0, 2, 3], p=[1 / 10, 1 / 10, 8 / 10])
 
         return super().step(action)
 
@@ -206,9 +206,9 @@ class MDP:
         self.cliffs = cliff_positions
 
         self.out_reward = -10
-        self.cliff_reward = -100
-        self.cooky_reward = 1000000000
-        self.move_reward = -1
+        self.cliff_reward = -50
+        self.cooky_reward = 10000000000
+        self.move_reward = -100
             
 
     def out_of_board(self, state):
@@ -226,17 +226,18 @@ class MDP:
                     if ((row, col) in self.cliffs or (row, col) == (3, 11)):
                         continue
                     self.Q[row, col, action] = 0
-                    for k in range(4):
-                        if k != action and action%2 == k%2:
-                            continue
-                        next_state = (row+drow[k], col+dcol[k])
-                        if self.out_of_board(next_state):
-                            V_next = self.out_reward
-                        else:
-                            V_next = self.V[next_state[0], next_state[1]]
+                    # for k in range(4):
+                        # if k != action and action%2 == k%2:
+                        #     continue
+                        # next_state = (row+drow[k], col+dcol[k])
+                        # if self.out_of_board(next_state):
+                        #     V_next = self.out_reward
+                        # else:
+                        #     V_next = self.V[next_state[0], next_state[1]]
 
-                        self.Q[row, col, action] += 1/3*( self.move_reward + self.gama*V_next)
+                        # self.Q[row, col, action] += 1/3*( self.move_reward + self.gama*V_next)
 
+                    ##################
                     # next_state = (row+drow[action], col+dcol[action])
                     # if self.out_of_board(next_state):
                     #     V_next = -100
@@ -244,6 +245,22 @@ class MDP:
                     #     V_next = self.V[next_state[0], next_state[1]]
 
                     # self.Q[row, col, action] += 1*( (-1) + self.gama*V_next)
+
+                    #########################
+                    for k in range(4):
+                        if k != action and action%2 == k%2:
+                            continue
+                        if k == action:
+                            prob = 8 / 10
+                        else:
+                            prob = 1 / 10
+                        next_state = (row+drow[k], col+dcol[k])
+                        if self.out_of_board(next_state):
+                            V_next = self.out_reward
+                        else:
+                            V_next = self.V[next_state[0], next_state[1]]
+
+                        self.Q[row, col, action] += prob*( self.move_reward + self.gama*V_next)
 
                     
                     
