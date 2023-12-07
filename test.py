@@ -205,10 +205,10 @@ class MDP:
         self.gama = discount_factor
         self.cliffs = cliff_positions
 
-        self.out_reward = -100
+        self.out_reward = -50
         self.cliff_reward = -100
-        self.cooky_reward = 1000
-        self.move_reward = -10
+        self.cooky_reward = 1000000
+        self.move_reward = -1
             
 
     def out_of_board(self, state):
@@ -237,7 +237,6 @@ class MDP:
 
                         self.Q[row, col, action] += 1/3*( self.move_reward + self.gama*V_next)
 
-                    # definie solution
                     # next_state = (row+drow[action], col+dcol[action])
                     # if self.out_of_board(next_state):
                     #     V_next = -100
@@ -281,8 +280,8 @@ class MDP:
         converged = 0
         convergance_num = 20
         while iter_cnt < self.max_iter and converged<convergance_num:
-            if iter_cnt < 10:
-                print(self.V)
+            # if iter_cnt < 10:
+                # print(self.V)
             # self.tmp_V = self.V.copy()
             self.update_QV()
             # if self.check_convergence():
@@ -292,17 +291,26 @@ class MDP:
 
             iter_cnt += 1
         self.update_pi()
-        print(self.pi)
+        self.print_pi()
 
             
     def policy(self, state):
         return self.pi[state[0], state[1]]
     
+    def print_pi(self):
+        direction = {0: '^', 1: '>', 2: 'v', 3: '<'}
+        for i in range(4):
+            for j in range(12):
+                print(direction[self.
+                      pi[i, j]], end=" ")
+            print()
+        print()
+    
     
 # Define the maximum number of iterations
 max_iter_number = 1000
 
-mdp = MDP(1000, 0.99, env.cliff_positions)
+mdp = MDP(1000, 0.999, env.cliff_positions)
 mdp.run()
 
 current_state = (3, 0)
