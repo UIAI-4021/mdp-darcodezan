@@ -205,9 +205,9 @@ class MDP:
         self.gama = discount_factor
         self.cliffs = cliff_positions
 
-        self.out_reward = -50
+        self.out_reward = -10
         self.cliff_reward = -100
-        self.cooky_reward = 1000000
+        self.cooky_reward = 1000000000
         self.move_reward = -1
             
 
